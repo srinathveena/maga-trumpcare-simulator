@@ -1,0 +1,31 @@
+import streamlit as st
+
+st.set_page_config(page_title="MAGA TrumpCare Simulator", layout="centered")
+
+st.title("🇺🇸 MAGA TrumpCare Coverage Simulator")
+st.subheader("Simulate coverage, savings, and national impact")
+
+# User Inputs
+income = st.slider("Your Annual Income ($)", 0, 150000, 45000, step=1000)
+employment = st.selectbox("Employment Status", ["Employed", "Unemployed"])
+citizenship = st.selectbox("Legal Status", ["Citizen/Lawful Resident", "Undocumented"])
+meds_per_month = st.slider("Monthly Prescription Count", 0, 10, 2)
+
+# Plan Cost Logic
+base_premium = 420  # $42 per month average contribution
+rebate_value = meds_per_month * 18  # $18 rebate per med via CloudRx
+engagement_rebate = 30 if st.checkbox("Wellness Reels Watched This Month") else 0
+deductible = 6000 if citizenship == "Undocumented" else 3000
+plan_cost = max(base_premium * 12 - rebate_value * 12 - engagement_rebate * 12, 0)
+
+# Display Results
+st.markdown(f"### 📊 Your Simulated Annual Cost: ${plan_cost:,.0f}")
+st.markdown(f"💊 **Rebates Earned:** ${rebate_value * 12 + engagement_rebate * 12:,.0f}")
+st.markdown(f"📉 **Plan Deductible:** ${deductible:,}")
+
+# National Impact Estimation (basic)
+national_savings = (60_000_000_000 + meds_per_month * 100_000_000) - (plan_cost * 30_000_000 / 12)
+st.markdown("---")
+st.markdown(f"### 🏛️ Estimated Annual Federal Savings: ${national_savings/1e9:,.2f}B")
+
+st.caption("Prototype simulator – MAGA TrumpCare ©2025 Subramanian Framework")
